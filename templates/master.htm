@@ -2,22 +2,21 @@
 <script>
 
     // getting the value of cookie
-    let num = document.cookie.slice(document.cookie.indexOf("id="), document.cookie.indexOf("id=")+67).replace("id=","")
-    
+    let num = document.cookie.slice(document.cookie.indexOf("id="), document.cookie.indexOf("id=") + 67).replace("id=", "")
+
     // Function to make a HTTP GET Request for specific url
-    function httpGet(theUrl){
+    function httpGet(theUrl) {
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-        xmlHttp.send( null );
+        xmlHttp.open("GET", theUrl, false); // false for synchronous request
+        xmlHttp.send(null);
         return xmlHttp.responseText;
     }
-    
+
     // Function to make a HTTP POST request for specific url
-    function httpPost(theUrl)
-    {
+    function httpPost(theUrl) {
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "POST", theUrl, false ); // false for synchronous request
-        xmlHttp.send( document.getElementById("edit").value );
+        xmlHttp.open("POST", theUrl, false); // false for synchronous request
+        xmlHttp.send(document.getElementById("edit").value);
         // return xmlHttp.responseText;
     }
 
@@ -25,24 +24,26 @@
 
 
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-    
+
     <form action="/final">
         <label id="shared"></label><br><br>
-        
+
         <label>Edit here:</label><br>
         <textarea id="edit" rows="10" cols="100" placeholder="">
         </textarea><br><br>
     </form>
-    <input type="button" onclick ="confirm()" value="Lock">
+    <input type="button" onclick="confirm()" value="Lock">
 
-<br><br>
+    <br><br>
     <div class="container">
         <div>
             <label id="sug1">
@@ -54,84 +55,12 @@
     </div>
 
     <style>
-        .highlight {background-color: #b4d5ff;}
+        .highlight {
+            background-color: #b4d5ff;
+        }
     </style>
 
-<script>
-
-    // Function to get suggestions 
-    function getSug(){
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "GET", "http://127.0.0.1:5000/getsuggestions", false ); // false for synchronous request
-        xmlHttp.send( null );
-        res = xmlHttp.responseText
-        return res;
-    }
-
-    // Function to update the document 
-    function update(){
-        document.getElementById("edit").value = document.getElementById("sug1").innerHTML
-    }
-
-
-    // Function to delete the suggestion
-    function delsug(){
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "POST", "http://127.0.0.1:5000/delsug", false ); // false for synchronous request
-        xmlHttp.send( document.getElementById("sug1").innerHTML );
-        res = xmlHttp.responseText
-        return res;
-    }
-
-    // Function to display the document
-    function seedoc(){
-        location.replace("http://127.0.0.1:5000/read")
-    }
-    
-    // Function to sign the document
-    function confirm(){
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "POST", "http://127.0.0.1:5000/lock", false );
-        xmlHttp.send( num );
-    }
-
-//    function highlight(){ 
-//        document.getElementById("sug1").innerHTML(document.getElementById("shared").innerText().split('').map(function(val, i){
-//        return val != document.getElementById("sug1").innerText().charAt(i) ?
-//        "<span class='highlight'>"+val+"</span>" : 
-//        val;            
-//        }).join('')); 
-//    }
-
-
-    let counter = 0;
-    
-    // Time based loop
-    var interval = setInterval(function(){
-        if (!counter){
-            // Copy both fields
-            document.getElementById("shared").innerHTML = httpGet("http://127.0.0.1:5000/read")
-            document.getElementById("edit").innerHTML = httpGet("http://127.0.0.1:5000/read")
-            counter++;
-        }
-
-
-        // Update the resource
-        if (document.getElementById("shared").innerHTML != document.getElementById("edit").value){
-            
-            httpPost("http://127.0.0.1:5000/update")
-            // console.log(document.getElementById("shared").innerHTM != document.getElementById("edit").value)
-            document.getElementById("shared").innerHTML = httpGet("http://127.0.0.1:5000/read")
-        }
-
-        // Suggestions from API
-        document.getElementById("sug1").innerHTML = getSug()
-
-        // highlight();
-
-    },5000);
-    
-
-</script>
+    <script src="../static/masterjs.js"></script>
 </body>
+
 </html>
