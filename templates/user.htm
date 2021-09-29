@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<script>
+
+    // Getting the value of the cookie
+    let num = document.cookie.slice(document.cookie.indexOf("id="), document.cookie.indexOf("id=") + 67).replace("id=", "")
+    console.log(num)
+
+</script>
+
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <form>
+        <label id="shared"></label><br><br>
+
+        <label>Edit here:</label><br>
+        <textarea id="edit" rows="10" cols="100" placeholder="">
+        </textarea><br><br>
+    </form>
+    <input type="button" onclick="suggest()" value="suggest">
+    <input type="button" onclick="seedoc()" value="Display document">
+    <input type="button" onclick="sign()" value="Sign">
+
+
+    <script>
+
+        // Function for HTTP GET 
+        function httpGet(theUrl) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+            return xmlHttp.responseText;
+        }
+
+        // Function to throw the suggestion 
+        function suggest() {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("POST", "http://127.0.0.1:5000/suggest", false); // false for synchronous request
+            xmlHttp.send(num + "&" + document.getElementById("edit").value);
+            // return xmlHttp.responseText;
+        }
+
+        // Prompt function to confirm the sign
+        function sign() {
+            ans = prompt("Do you want to sign this?\nYES/NO\n" + document.getElementById("shared").innerHTML)
+            if (ans == "YES") {
+                confirm()
+            }
+        }
+
+        // Confirmation sent to API
+        function confirm() {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("POST", "http://127.0.0.1:5000/lock", false);
+            xmlHttp.send(num);
+        }
+
+        // Function to see the document
+        function seedoc() {
+            location.replace("http://127.0.0.1:5000/read")
+        }
+
+        // Time loop to update the document dynamically
+        var interval = setInterval(function () {
+            document.getElementById("shared").innerHTML = httpGet("http://127.0.0.1:5000/read")
+        }, 5000);
+
+
+    </script>
+</body>
+
+</html>
